@@ -1,11 +1,75 @@
 <?php
 
+function post_request($method, $data)
+{
+    $subdomain = config("amo")["subdomain"];
+    $url = "https://".$subdomain.".amocrm.ru/api/v4/$method";
+    vd($url, '$url', 0);
+    $token = json_decode(file_get_contents(dirname(__DIR__, 1)."/tokens.json"), 1)["access_token"];
+
+    $headers = [
+        "Authorization: Bearer ".$token,
+    ];
+
+    vd([
+        "data" => $data,
+        "headers" => $headers,
+        "url" => $url,
+    ], "Данные для запроса в amoCRM", 0);
+
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+
+
+    return json_decode($response, 1);
+}
+
+function get_request($method, $data=null)
+{
+    $subdomain = config("amo")["subdomain"];
+    $url = "https://{$subdomain}.amocrm.ru/api/v4/{$method}";
+    if ($data != null) $url .= "?".json_encode($data);
+    $token = json_decode(file_get_contents(dirname(__DIR__, 1)."/tokens.json"), 1)["access_token"];
+
+    $headers = [
+        "Authorization: Bearer ".$token,
+    ];
+
+    $ch = curl_init();
+
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, 0);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+
+    if ($response === false) {
+        die('Error occurred while fetching the data: '
+            . curl_error($ch));
+    }
+
+    curl_close($ch);
+
+    $response = json_decode($response, 1);
+
+    return $response;
+}
+
 /**
  * @param $url
  * @param $data
  * @return mixed|void
  */
-function post_request($url, $data)
+function post_request_refresh_token($url, $data)
 {
     $curl = curl_init();
     curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);

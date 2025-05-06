@@ -28,7 +28,7 @@ function refreshToken()
 
     $url = "https://".config("amo")["subdomain"].".amocrm.ru/oauth2/access_token";
 
-    $req_new_token = post_request($url, $data);
+    $req_new_token = post_request_refresh_token($url, $data);
 
     file_put_contents(__DIR__."/tokens.json", json_encode($req_new_token));
 
