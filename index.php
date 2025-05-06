@@ -34,7 +34,7 @@ function get_req()
             break;
 
         case isset($req["contacts"]["update"]):
-            update_add($req);
+            contacts_update($req);
             break;
 
         default:
@@ -42,7 +42,7 @@ function get_req()
     }
 }
 
-function update_add($req)
+function contacts_update($req)
 {
     $contact = $req["contacts"]["update"][0];
 
@@ -83,7 +83,7 @@ function update_add($req)
 
     $responsible_user_name = (isset($user["name"])) ? "Ответственный пользователь: ".$user["name"] : "Не удалось поределить ответственного пользователя";
 
-    $text = "Изменен Контакт\nНазвание: {$title}\n{$responsible_user_name}\nВремя создания: {$date_update}\n\nНовые поля\n{$news}";
+    $text = "Изменен Контакт\nНазвание: {$title}\n{$responsible_user_name}\nВремя изменения: {$date_update}\n\nНовые поля\n{$news}";
 
     $data = [[
         "entity_id" => (int)$id,
@@ -137,7 +137,7 @@ function lead_update($req)
 
     $responsible_user_name = (isset($user["name"])) ? "Ответственный пользователь: ".$user["name"] : "Не удалось поределить ответственного пользователя";
 
-    $text = "Изменена сделка\nНазвание: {$title}\n{$responsible_user_name}\nВремя создания: {$date_update}\n\nНовые поля\n{$news}";
+    $text = "Изменена сделка\nНазвание: {$title}\n{$responsible_user_name}\nВремя изменения: {$date_update}\n\nНовые поля\n{$news}";
 
     $data = [[
         "entity_id" => (int)$id,
